@@ -88,14 +88,51 @@ export default function Hero() {
 
                 <div className="phone-mockup relative w-[280px] md:w-[300px] overflow-hidden p-2">
                   <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
-                    <Image
-                      src="/images/hero.png"
-                      alt="RingSmart App"
-                      width={300}
-                      height={650}
-                      className="w-full h-auto"
-                      priority
-                    />
+                    <div className="animate-phone-scroll" style={{ width: "600%" }}>
+                      <Image
+                        src="/images/hero.png"
+                        alt="RingSmart Splash"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                        priority
+                      />
+                      <Image
+                        src="/images/feature-fight-lab.png"
+                        alt="Fight Lab"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                      />
+                      <Image
+                        src="/images/feature-tactics.png"
+                        alt="Fight Tactics"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                      />
+                      <Image
+                        src="/images/feature-nutrition.png"
+                        alt="Nutrition"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                      />
+                      <Image
+                        src="/images/feature-conditioning.png"
+                        alt="Conditioning"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                      />
+                      <Image
+                        src="/images/app-home.png"
+                        alt="RingSmart Dashboard"
+                        width={300}
+                        height={650}
+                        className="w-1/6 h-auto flex-shrink-0"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

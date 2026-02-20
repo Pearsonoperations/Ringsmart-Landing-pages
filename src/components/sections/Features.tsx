@@ -85,19 +85,59 @@ const features = [
   },
 ];
 
-function PhoneMockup({ feature }: { feature: (typeof features)[0] }) {
+function PhoneMockup({ feature, side = "left" }: { feature: (typeof features)[0]; side?: "left" | "right" }) {
+  const tilt = side === "left" ? "rotateY(14deg) rotateX(2deg)" : "rotateY(-14deg) rotateX(2deg)";
+
   return (
-    <div className="relative">
+    <div className="relative" style={{ perspective: "1000px" }}>
       <div className="absolute inset-0 rounded-[50px] bg-brand/10 blur-[40px] scale-90" />
-      <div className="phone-mockup relative w-[260px] overflow-hidden p-2">
-        <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
-          <Image
-            src={feature.image}
-            alt={feature.tag}
-            width={260}
-            height={560}
-            className="w-full h-auto"
-          />
+      <div
+        className="relative"
+        style={{ transform: tilt, transformStyle: "preserve-3d" }}
+      >
+        {/* Phone front face */}
+        <div className="phone-mockup-3d relative w-[260px] p-[10px]">
+          {/* Notch */}
+          <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-black rounded-b-[14px] z-20" />
+
+          {/* Screen */}
+          <div className="rounded-[30px] overflow-hidden bg-[#09090b] relative">
+            <Image
+              src={feature.image}
+              alt={feature.tag}
+              width={260}
+              height={560}
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+
+        {/* Phone side edge (depth) */}
+        <div
+          className="absolute"
+          style={{
+            top: "36px",
+            bottom: "36px",
+            width: "12px",
+            ...(side === "left"
+              ? { right: "-6px", transformOrigin: "left center", transform: "rotateY(90deg)" }
+              : { left: "-6px", transformOrigin: "right center", transform: "rotateY(-90deg)" }),
+            background: "linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 30%, #222 50%, #1a1a1a 70%, #2a2a2a 100%)",
+            borderRadius: "2px",
+          }}
+        >
+          {/* Volume / power buttons */}
+          {side === "left" ? (
+            <>
+              <div className="absolute top-[18%] left-0 w-[2px] h-[30px] rounded-l-sm bg-[#333]" />
+              <div className="absolute top-[28%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
+              <div className="absolute top-[35%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
+            </>
+          ) : (
+            <>
+              <div className="absolute top-[25%] right-0 w-[2px] h-[35px] rounded-r-sm bg-[#333]" />
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -166,7 +206,7 @@ function TimelineFeature({
         >
           {feature.number}
         </motion.span>
-        <PhoneMockup feature={feature} />
+        <PhoneMockup feature={feature} side={isOdd ? "left" : "right"} />
         <FeatureContent feature={feature} align="right" />
       </div>
 
@@ -181,7 +221,7 @@ function TimelineFeature({
           className={`${isOdd ? "flex justify-end pr-8" : "pr-8"}`}
         >
           {isOdd ? (
-            <PhoneMockup feature={feature} />
+            <PhoneMockup feature={feature} side="left" />
           ) : (
             <FeatureContent feature={feature} align="left" />
           )}
@@ -211,7 +251,7 @@ function TimelineFeature({
           {isOdd ? (
             <FeatureContent feature={feature} align="right" />
           ) : (
-            <PhoneMockup feature={feature} />
+            <PhoneMockup feature={feature} side="right" />
           )}
         </motion.div>
       </div>

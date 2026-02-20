@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const steps = [
   {
@@ -73,6 +74,43 @@ const steps = [
   },
 ];
 
+function SplitHeading() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.9", "start 0.4"],
+  });
+
+  const leftX = useTransform(scrollYProgress, [0, 1], ["-50vw", "0vw"]);
+  const rightX = useTransform(scrollYProgress, [0, 1], ["50vw", "0vw"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+
+  return (
+    <div ref={ref} className="text-center mb-20 overflow-hidden">
+      <motion.span
+        style={{ opacity }}
+        className="inline-block text-sm font-semibold uppercase tracking-widest text-brand"
+      >
+        How It Works
+      </motion.span>
+      <h2 className="mt-4 text-4xl md:text-5xl font-bold tracking-tight flex flex-col sm:flex-row items-center justify-center gap-x-3">
+        <motion.span style={{ x: leftX, opacity }}>
+          From assessment
+        </motion.span>
+        <motion.span style={{ x: rightX, opacity }}>
+          to <span className="text-gradient">action</span>
+        </motion.span>
+      </h2>
+      <motion.p
+        style={{ opacity }}
+        className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
+      >
+        Three steps to a training plan that actually fits how you fight.
+      </motion.p>
+    </div>
+  );
+}
+
 export default function HowItWorks() {
   return (
     <section
@@ -83,24 +121,7 @@ export default function HowItWorks() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent" />
 
       <div className="mx-auto max-w-7xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
-        >
-          <span className="text-sm font-semibold uppercase tracking-widest text-brand">
-            How It Works
-          </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-bold tracking-tight">
-            From assessment to{" "}
-            <span className="text-gradient">action</span>
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Three steps to a training plan that actually fits how you fight.
-          </p>
-        </motion.div>
+        <SplitHeading />
 
         <div className="grid md:grid-cols-3 gap-8 relative">
           {/* Connecting arrows between cards (desktop) */}
@@ -132,10 +153,18 @@ export default function HowItWorks() {
             <motion.div
               key={step.number}
               initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0, boxShadow: [
+                "0 0 0px rgba(59,130,246,0)",
+                "0 0 50px rgba(59,130,246,0.6), 0 0 100px rgba(59,130,246,0.3)",
+                "0 0 0px rgba(59,130,246,0)",
+              ]}}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="relative group"
+              transition={{
+                opacity: { duration: 0.6, delay: index * 0.2 },
+                y: { duration: 0.6, delay: index * 0.2 },
+                boxShadow: { duration: 1.2, delay: index * 0.8 + 0.5, ease: "easeInOut" },
+              }}
+              className="relative group rounded-2xl"
             >
               <div className="glow-card rounded-2xl border border-white/5 bg-card/50 p-8 h-full">
                 <div className="flex items-start justify-between mb-6">

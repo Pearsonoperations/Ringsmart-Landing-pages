@@ -95,12 +95,21 @@ html {
 }
 
 .phone-mockup {
-  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  background: #09090b;
   border-radius: 40px;
   border: 3px solid #27272a;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* 3D realistic phone for Features section */
+.phone-mockup-3d {
+  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 50%, #111 100%);
+  border-radius: 36px;
+  border: 2px solid #3a3a3a;
   box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(59, 130, 246, 0.1);
+    0 25px 60px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Floating orb animations */
@@ -132,6 +141,22 @@ html {
 
 .animate-float-fast {
   animation: float-fast 6s ease-in-out infinite;
+}
+
+/* Phone mockup swipe animation - swipes through 6 screens, stays on last */
+@keyframes phone-swipe {
+  0%         { transform: translateX(0); }
+  5%, 15%    { transform: translateX(-16.666%); }
+  20%, 30%   { transform: translateX(-33.333%); }
+  35%, 45%   { transform: translateX(-50%); }
+  50%, 60%   { transform: translateX(-66.666%); }
+  65%, 100%  { transform: translateX(-83.333%); }
+}
+
+.animate-phone-scroll {
+  display: flex;
+  animation: phone-swipe 10s ease-in-out forwards;
+  animation-delay: 2s;
 }
 
 /* Glow card hover */
