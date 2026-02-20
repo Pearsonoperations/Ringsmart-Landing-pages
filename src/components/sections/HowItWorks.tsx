@@ -10,7 +10,7 @@ const steps = [
       "Answer questions about your stance, experience, fighting style, and where you struggle. It takes less than 2 minutes.",
     icon: (
       <svg
-        className="w-6 h-6"
+        className="w-7 h-7"
         fill="none"
         stroke="currentColor"
         strokeWidth={1.5}
@@ -28,10 +28,10 @@ const steps = [
     number: "02",
     title: "Get Your Diagnosis",
     description:
-      "RingSmart analyses your responses and identifies your fighting style, mechanical tendencies, and priority weaknesses.",
+      "RingSmart analyses your responses to build your fighter profile — identifying mechanical tendencies, style patterns, and priority weaknesses.",
     icon: (
       <svg
-        className="w-6 h-6"
+        className="w-7 h-7"
         fill="none"
         stroke="currentColor"
         strokeWidth={1.5}
@@ -52,7 +52,7 @@ const steps = [
       "Access your personalised drill library, build opponent gameplans, time your nutrition, and follow your conditioning programme.",
     icon: (
       <svg
-        className="w-6 h-6"
+        className="w-7 h-7"
         fill="none"
         stroke="currentColor"
         strokeWidth={1.5}
@@ -102,27 +102,47 @@ export default function HowItWorks() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 relative">
+          {/* Connecting arrows between cards (desktop) */}
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="hidden md:flex absolute top-1/2 -translate-y-1/2 items-center"
+              style={{
+                left: `calc(${((i + 1) * 100) / 3}% - 16px)`,
+              }}
+            >
+              <svg
+                className="w-8 h-8 text-brand/20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </div>
+          ))}
+
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
               className="relative group"
             >
-              {/* Connector line */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-[calc(50%+60px)] w-[calc(100%-120px)] h-px bg-gradient-to-r from-brand/30 to-brand/5" />
-              )}
-
-              <div className="rounded-2xl border border-white/5 bg-card/50 p-8 transition-all hover:border-brand/20 hover:bg-card/80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand group-hover:bg-brand/20 transition-colors">
+              <div className="glow-card rounded-2xl border border-white/5 bg-card/50 p-8 h-full">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand group-hover:bg-brand/20 transition-colors">
                     {step.icon}
                   </div>
-                  <span className="text-4xl font-bold text-white/5 group-hover:text-brand/10 transition-colors">
+                  <span className="text-5xl font-bold text-white/[0.04] group-hover:text-brand/10 transition-colors leading-none">
                     {step.number}
                   </span>
                 </div>
