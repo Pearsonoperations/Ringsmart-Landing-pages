@@ -46,8 +46,8 @@ export default function Navbar() {
           <Image
             src="/images/logo-r.png"
             alt="RingSmart"
-            width={36}
-            height={36}
+            width={44}
+            height={44}
             className="rounded-lg"
           />
           <span className="text-xl font-bold tracking-tight">

@@ -13,13 +13,13 @@ export default function Footer() {
       className="border-t border-white/5 bg-black/50"
     >
       <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <Image
               src="/images/logo-r.png"
               alt="RingSmart"
-              width={28}
-              height={28}
+              width={44}
+              height={44}
               className="rounded-lg"
             />
             <span className="text-sm font-semibold tracking-tight">
@@ -27,7 +27,7 @@ export default function Footer() {
             </span>
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center gap-6 text-sm text-muted-foreground">
             <a href="/privacy-policy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </a>
