@@ -217,7 +217,7 @@ function TimelineFeature({
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className={`${isOdd ? "flex justify-end pr-8" : "pr-8"}`}
         >
           {isOdd ? (
@@ -245,7 +245,7 @@ function TimelineFeature({
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+          transition={{ duration: 1.2, ease: "easeOut", delay: 0.15 }}
           className={`${!isOdd ? "flex pl-8" : "pl-8"}`}
         >
           {isOdd ? (
@@ -287,8 +287,8 @@ export default function Features() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-150px" }}
+          transition={{ duration: 1.2 }}
           className="text-center mb-24"
         >
           <span className="text-sm font-semibold uppercase tracking-widest text-brand">

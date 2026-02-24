@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect } from "react";
 
 const steps = [
   {
@@ -74,98 +73,120 @@ const steps = [
   },
 ];
 
-function SplitHeading() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 0.9", "start 0.4"],
-  });
-
-  const leftX = useTransform(scrollYProgress, [0, 1], ["-50vw", "0vw"]);
-  const rightX = useTransform(scrollYProgress, [0, 1], ["50vw", "0vw"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
-
-  return (
-    <div ref={ref} className="text-center mb-20 overflow-hidden">
-      <motion.span
-        style={{ opacity }}
-        className="inline-block text-sm font-semibold uppercase tracking-widest text-brand"
-      >
-        How It Works
-      </motion.span>
-      <h2 className="mt-4 text-4xl md:text-5xl font-bold tracking-tight flex flex-col sm:flex-row items-center justify-center gap-x-3">
-        <motion.span style={{ x: leftX, opacity }}>
-          From assessment
-        </motion.span>
-        <motion.span style={{ x: rightX, opacity }}>
-          to <span className="text-gradient">action</span>
-        </motion.span>
-      </h2>
-      <motion.p
-        style={{ opacity }}
-        className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
-      >
-        Three steps to a training plan that actually fits how you fight.
-      </motion.p>
-    </div>
-  );
-}
 
 export default function HowItWorks() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+
+  // IntersectionObserver for heading fade in (once only)
+  useEffect(() => {
+    const heading = headingRef.current;
+    if (!heading) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          heading.classList.add("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "-100px 0px" }
+    );
+
+    observer.observe(heading);
+    return () => observer.disconnect();
+  }, []);
+
+  // Horizontal scroll for cards — only moves forward, never reverses
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return;
+
+    const updatePosition = () => {
+      const rect = section.getBoundingClientRect();
+      const sectionHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+      const scrollDist = sectionHeight - viewportHeight;
+      const scrolled = -rect.top;
+
+      let progress = scrolled / scrollDist;
+      progress = Math.max(0, Math.min(1, progress));
+
+      const vw = window.innerWidth;
+      const startPad = vw * 0.75;
+      const rightPad = vw * 0.1;
+      const cardsWidth = track.scrollWidth - startPad - rightPad;
+      const centerPad = Math.max((vw - cardsWidth) / 2, vw * 0.05);
+      const maxTrans = startPad - centerPad;
+      track.style.transform = `translate3d(${-(progress * maxTrans)}px, 0, 0)`;
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updatePosition();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", updatePosition);
+    updatePosition();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, []);
+
   return (
-    <section
-      id="how-it-works"
-      className="relative py-32 bg-white/[0.01]"
-    >
-      {/* Top border line */}
+    <section ref={sectionRef} id="how-it-works" className="hiw-section">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent" />
 
-      <div className="mx-auto max-w-7xl px-6">
-        <SplitHeading />
+      <div className="hiw-sticky">
+        <div
+          ref={headingRef}
+          className="section-heading text-center pb-12 px-6"
+        >
+          <span className="inline-block text-sm font-semibold uppercase tracking-widest text-brand">
+            How It Works
+          </span>
+          <h2 className="mt-4 text-4xl md:text-5xl font-bold tracking-tight">
+            From assessment to{" "}
+            <span className="text-gradient">action</span>
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Three steps to a training plan that actually fits how you fight.
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Connecting arrows between cards (desktop) */}
-          {[0, 1].map((i) => (
-            <div
-              key={i}
-              className="hidden md:flex absolute top-1/2 -translate-y-1/2 items-center"
-              style={{
-                left: `calc(${((i + 1) * 100) / 3}% - 16px)`,
-              }}
-            >
-              <svg
-                className="w-8 h-8 text-brand/20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </div>
-          ))}
-
+        {/* Cards track — starts far right, slides left on scroll, never reverses */}
+        <div ref={trackRef} className="hiw-track">
           {steps.map((step, index) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0, boxShadow: [
-                "0 0 0px rgba(59,130,246,0)",
-                "0 0 50px rgba(59,130,246,0.6), 0 0 100px rgba(59,130,246,0.3)",
-                "0 0 0px rgba(59,130,246,0)",
-              ]}}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                opacity: { duration: 0.6, delay: index * 0.2 },
-                y: { duration: 0.6, delay: index * 0.2 },
-                boxShadow: { duration: 1.2, delay: index * 0.8 + 0.5, ease: "easeInOut" },
-              }}
-              className="relative group rounded-2xl"
-            >
+            <div key={step.number} className="hiw-card relative group">
+              {index < steps.length - 1 && (
+                <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-5 z-10">
+                  <svg
+                    className="w-8 h-8 text-brand/20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </div>
+              )}
+
               <div className="glow-card rounded-2xl border border-white/5 bg-card/50 p-8 h-full">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand group-hover:bg-brand/20 transition-colors">
@@ -180,7 +201,7 @@ export default function HowItWorks() {
                   {step.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const fightStyles = [
   {
@@ -62,50 +62,65 @@ function GlassCard({
   );
 }
 
+// Card spread positions (px from center)
+const spreadPositions = [-480, -240, 0, 240, 480];
+
 export default function Styles() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [introVisible, setIntroVisible] = useState(false);
+  const [cardsVisible, setCardsVisible] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.8", "end end"],
-  });
+  // Trigger intro card when section comes into view (once)
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  // Header + intro card appear together
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.04], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.04], [20, 0]);
+    // Also handle section-heading elements
+    const headings = section.querySelectorAll(".section-heading");
+    const headingObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            headingObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "-75px 0px" }
+    );
+    headings.forEach((h) => headingObserver.observe(h));
 
-  // Intro card: appears WITH header, holds for a good while, then fades quickly
-  const introOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.04, 0.4, 0.45],
-    [0, 1, 1, 0]
-  );
-  const introScale = useTransform(scrollYProgress, [0.4, 0.45], [1, 0.85]);
+    // Trigger intro card
+    const introObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIntroVisible(true);
+          introObserver.disconnect();
+          // After intro plays, show spread cards
+          setTimeout(() => {
+            setCardsVisible(true);
+          }, 1500);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    introObserver.observe(section);
 
-  // Style cards: snap visible right when intro is gone, then spread
-  const spreadPx = 240;
-  const card0X = useTransform(scrollYProgress, [0.45, 0.7], [0, -2 * spreadPx]);
-  const card1X = useTransform(scrollYProgress, [0.45, 0.7], [0, -1 * spreadPx]);
-  const card2X = useTransform(scrollYProgress, [0.45, 0.7], [0, 0]);
-  const card3X = useTransform(scrollYProgress, [0.45, 0.7], [0, 1 * spreadPx]);
-  const card4X = useTransform(scrollYProgress, [0.45, 0.7], [0, 2 * spreadPx]);
-  const cardXValues = [card0X, card1X, card2X, card3X, card4X];
-
-  // Cards appear instantly once intro is fully gone — no crossfade overlap
-  const cardsOpacity = useTransform(scrollYProgress, [0.45, 0.47], [0, 1]);
+    return () => {
+      headingObserver.disconnect();
+      introObserver.disconnect();
+    };
+  }, []);
 
   return (
     <section ref={sectionRef} id="styles" className="relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent" />
 
-      {/* Desktop: Sticky scroll-driven card spread */}
-      <div className="hidden lg:block min-h-[220vh]">
-        <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-          {/* Header — fades in fast */}
-          <motion.div
-            style={{ opacity: headerOpacity, y: headerY }}
-            className="text-center mb-6"
-          >
+      {/* Desktop */}
+      <div className="hidden lg:block py-32">
+        <div className="flex flex-col items-center justify-center px-6">
+          {/* Header */}
+          <div className="section-heading text-center mb-12">
             <span className="text-sm font-semibold uppercase tracking-widest text-brand">
               Your Style
             </span>
@@ -117,16 +132,15 @@ export default function Styles() {
               RingSmart classifies your fighting style and builds a training plan
               around your strengths, tendencies, and risks.
             </p>
-          </motion.div>
+          </div>
 
           {/* Cards area */}
-          <div className="relative w-full max-w-7xl flex items-center justify-center" style={{ height: 400 }}>
-            {/* Intro card — solid background, high z-index, no bleed */}
+          <div className="relative w-full max-w-7xl flex items-center justify-center" style={{ height: 420 }}>
+            {/* Intro card — fades in then out */}
             <motion.div
-              style={{
-                opacity: introOpacity,
-                scale: introScale,
-              }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={introVisible ? { opacity: cardsVisible ? 0 : 1, scale: cardsVisible ? 0.85 : 1 } : {}}
+              transition={{ duration: 0.6 }}
               className="absolute z-30 pointer-events-none"
             >
               <GlassCard className="w-[260px] h-[380px] border-brand/25 shadow-2xl">
@@ -157,15 +171,14 @@ export default function Styles() {
               </GlassCard>
             </motion.div>
 
-            {/* 5 style cards — hidden until intro gone, then fan out */}
+            {/* 5 style cards — appear and spread once */}
             {fightStyles.map((style, index) => (
               <motion.div
                 key={style.name}
-                style={{
-                  x: cardXValues[index],
-                  opacity: cardsOpacity,
-                  zIndex: 10 - Math.abs(index - 2),
-                }}
+                initial={{ opacity: 0, x: 0 }}
+                animate={cardsVisible ? { opacity: 1, x: spreadPositions[index] } : {}}
+                transition={{ duration: 0.8, delay: index * 0.08, ease: "easeOut" }}
+                style={{ zIndex: 10 - Math.abs(index - 2) }}
                 className="absolute"
               >
                 <GlassCard className="w-[220px] h-[360px] transition-all duration-300 hover:border-brand/60 hover:shadow-[0_0_20px_rgba(59,130,246,0.15),inset_0_0_20px_rgba(59,130,246,0.05)] hover:-translate-y-1">
@@ -194,13 +207,7 @@ export default function Styles() {
 
       {/* Mobile: Standard scroll layout */}
       <div className="lg:hidden py-32 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        <div className="section-heading text-center mb-12">
           <span className="text-sm font-semibold uppercase tracking-widest text-brand">
             Your Style
           </span>
@@ -212,7 +219,7 @@ export default function Styles() {
             RingSmart classifies your fighting style and builds a training plan
             around your strengths, tendencies, and risks.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
           {fightStyles.map((style, index) => (

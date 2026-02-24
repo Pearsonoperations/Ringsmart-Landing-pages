@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { AppStoreBadge, GooglePlayBadge } from "@/components/StoreBadges";
+import { AppStoreBadge } from "@/components/StoreBadges";
 
 export default function CTA() {
   return (
@@ -45,7 +45,6 @@ export default function CTA() {
           className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center"
         >
           <AppStoreBadge />
-          <GooglePlayBadge />
         </motion.div>
 
         <motion.p

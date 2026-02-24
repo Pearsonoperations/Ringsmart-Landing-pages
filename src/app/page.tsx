@@ -1,3 +1,4 @@
+import IntroScreen from "@/components/IntroScreen";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
 import Features from "@/components/sections/Features";
@@ -10,6 +11,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
+      <IntroScreen />
       <Navbar />
       <main>
         <Hero />

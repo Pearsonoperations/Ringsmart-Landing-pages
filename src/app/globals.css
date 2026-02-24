@@ -169,3 +169,82 @@ html {
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.08), 0 8px 32px rgba(0, 0, 0, 0.3);
   transform: translateY(-4px);
 }
+
+/* Intro glassmorphism button */
+.intro-glass-btn {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* Intro screen pulse glow for glassmorphism button */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(59, 130, 246, 0.1),
+      inset 0 0 15px rgba(59, 130, 246, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(59, 130, 246, 0.5),
+      0 0 60px rgba(59, 130, 246, 0.2),
+      inset 0 0 20px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.intro-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Hide page content behind intro until it completes */
+html.intro-active nav,
+html.intro-active main,
+html.intro-active footer {
+  visibility: hidden;
+}
+
+/* How It Works — horizontal scroll */
+.hiw-section {
+  height: 400vh;
+  position: relative;
+}
+
+.hiw-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hiw-track {
+  display: flex;
+  gap: 2rem;
+  padding-left: 75vw;
+  padding-right: 10vw;
+  width: max-content;
+  will-change: transform;
+}
+
+.hiw-card {
+  width: clamp(300px, 30vw, 400px);
+  flex-shrink: 0;
+}
+
+/* Section heading scroll fade */
+.section-heading {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1.4s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.section-heading.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
