@@ -227,6 +227,21 @@ html.intro-active footer {
   flex-shrink: 0;
 }
 
+/* Card highlight sequence on scroll */
+.hiw-card-active .glow-card {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.12), 0 0 60px rgba(59, 130, 246, 0.06);
+  transform: translateY(-6px);
+}
+
+.hiw-card-active .glow-card .flex.h-14 {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.hiw-card-active .glow-card span.text-5xl {
+  color: rgba(59, 130, 246, 0.1);
+}
+
 /* Desktop: horizontal scroll */
 @media (min-width: 768px) {
   .hiw-section {

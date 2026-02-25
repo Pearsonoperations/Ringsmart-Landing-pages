@@ -78,6 +78,7 @@ export default function HowItWorks() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // IntersectionObserver for heading fade in (once only)
   useEffect(() => {
@@ -123,6 +124,17 @@ export default function HowItWorks() {
       const centerPad = Math.max((vw - cardsWidth) / 2, vw * 0.05);
       const maxTrans = startPad - centerPad;
       track.style.transform = `translate3d(${-(progress * maxTrans)}px, 0, 0)`;
+
+      // Highlight sequence: activate card based on scroll progress
+      const activeIndex = progress < 0.25 ? 0 : progress < 0.6 ? 1 : 2;
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return;
+        if (i === activeIndex) {
+          card.classList.add("hiw-card-active");
+        } else {
+          card.classList.remove("hiw-card-active");
+        }
+      });
     };
 
     let ticking = false;
@@ -170,7 +182,7 @@ export default function HowItWorks() {
         {/* Desktop: horizontal scroll track */}
         <div ref={trackRef} className="hiw-track">
           {steps.map((step, index) => (
-            <div key={step.number} className="hiw-card relative group">
+            <div key={step.number} ref={(el) => { cardsRef.current[index] = el; }} className="hiw-card relative group">
               {index < steps.length - 1 && (
                 <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-5 z-10">
                   <svg
