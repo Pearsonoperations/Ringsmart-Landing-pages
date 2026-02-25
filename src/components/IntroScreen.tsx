@@ -28,11 +28,13 @@ export default function IntroScreen() {
     const tl = gsap.timeline();
 
     if (isMobile) {
-      // Mobile: instant — skip straight to homepage
+      // Mobile: remove overlay instantly, then trigger Hero animation after one frame
       document.documentElement.classList.remove("intro-active");
       document.body.style.overflow = "";
-      window.dispatchEvent(new Event("intro-complete"));
       if (overlayRef.current) overlayRef.current.style.display = "none";
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("intro-complete"));
+      });
       return;
     } else {
       // Desktop: full zoom-into-phone animation
