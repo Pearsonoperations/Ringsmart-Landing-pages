@@ -7,11 +7,21 @@ import { AppStoreBadge } from "@/components/StoreBadges";
 
 export default function Hero() {
   const [ready, setReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const onIntroComplete = () => setTimeout(() => setReady(true), 200);
-    window.addEventListener("intro-complete", onIntroComplete);
-    return () => window.removeEventListener("intro-complete", onIntroComplete);
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+
+    if (mobile) {
+      // Mobile: skip intro gate, show content immediately
+      setReady(true);
+    } else {
+      // Desktop: wait for intro zoom to finish
+      const onIntroComplete = () => setTimeout(() => setReady(true), 200);
+      window.addEventListener("intro-complete", onIntroComplete);
+      return () => window.removeEventListener("intro-complete", onIntroComplete);
+    }
   }, []);
 
   return (
@@ -71,30 +81,21 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right - Phone rises from below, rotates from east to face user */}
-          <div className="flex-shrink-0" style={{ perspective: "1200px" }}>
+          {/* Right - Phone (desktop only) */}
+          <div className="hidden lg:block flex-shrink-0" style={{ perspective: "1200px" }}>
             <motion.div
-              initial={{
-                opacity: 0,
-                y: 300,
-                rotateY: -75,
-              }}
-              animate={
-                ready
-                  ? { opacity: 1, y: 0, rotateY: 0 }
-                  : { opacity: 0, y: 300, rotateY: -75 }
+              initial={{ opacity: 0, y: 300, rotateY: -75 }}
+              animate={ready
+                ? { opacity: 1, y: 0, rotateY: 0 }
+                : { opacity: 0, y: 300, rotateY: -75 }
               }
-              transition={{
-                duration: 1.4,
-                delay: 0.4,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="relative">
                 {/* Radial glow behind phone */}
                 <div className="absolute -inset-8 rounded-full bg-brand/15 blur-[80px]" />
 
-                <div className="phone-mockup relative w-[280px] md:w-[300px] overflow-hidden p-2">
+                <div className="phone-mockup relative w-[300px] overflow-hidden p-2">
                   <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
                     <div
                       className={ready ? "animate-phone-scroll" : "flex"}

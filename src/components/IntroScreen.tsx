@@ -24,72 +24,64 @@ export default function IntroScreen() {
   const handleEnter = useCallback(() => {
     if (!screenRef.current || !contentRef.current || !overlayRef.current) return;
 
-    // Get the phone screen center in viewport coords
-    const screenRect = screenRef.current.getBoundingClientRect();
-    const cx = screenRect.left + screenRect.width / 2;
-    const cy = screenRect.top + screenRect.height / 2;
-
-    // Set transform-origin on the content layer to the phone screen center
-    // so scaling zooms the camera INTO the phone
-    contentRef.current.style.transformOrigin = `${cx}px ${cy}px`;
-
+    const isMobile = window.innerWidth < 768;
     const tl = gsap.timeline();
 
-    // Button fades out quickly
-    tl.to(buttonRef.current, {
-      opacity: 0,
-      duration: 0.2,
-      ease: "power2.in",
-    });
+    if (isMobile) {
+      // Mobile: instant — skip straight to homepage
+      document.documentElement.classList.remove("intro-active");
+      document.body.style.overflow = "";
+      window.dispatchEvent(new Event("intro-complete"));
+      if (overlayRef.current) overlayRef.current.style.display = "none";
+      return;
+    } else {
+      // Desktop: full zoom-into-phone animation
+      const screenRect = screenRef.current.getBoundingClientRect();
+      const cx = screenRect.left + screenRect.width / 2;
+      const cy = screenRect.top + screenRect.height / 2;
+      contentRef.current.style.transformOrigin = `${cx}px ${cy}px`;
 
-    // Zoom the content layer — camera dives into the phone screen
-    tl.to(
-      contentRef.current,
-      {
-        scale: 25,
-        duration: 1.4,
-        ease: "power2.in",
-      },
-      0.15
-    );
-
-    // Fade to black
-    tl.to(
-      blackoutRef.current,
-      {
-        opacity: 1,
-        duration: 0.8,
-        ease: "power2.in",
-      },
-      0.15
-    );
-
-    // Reveal page content and fire event right as we start fading overlay
-    tl.call(
-      () => {
-        document.documentElement.classList.remove("intro-active");
-        document.body.style.overflow = "";
-        window.dispatchEvent(new Event("intro-complete"));
-      },
-      [],
-      0.8
-    );
-
-    // Fade overlay out to reveal landing page
-    tl.to(
-      overlayRef.current,
-      {
+      tl.to(buttonRef.current, {
         opacity: 0,
-        duration: 0.3,
-        ease: "power1.out",
-        onComplete: () => {
-          if (overlayRef.current) {
-            overlayRef.current.style.display = "none";
-          }
+        duration: 0.2,
+        ease: "power2.in",
+      });
+
+      tl.to(
+        contentRef.current,
+        { scale: 25, duration: 1.4, ease: "power2.in" },
+        0.15
+      );
+
+      tl.to(
+        blackoutRef.current,
+        { opacity: 1, duration: 0.8, ease: "power2.in" },
+        0.15
+      );
+
+      tl.call(
+        () => {
+          document.documentElement.classList.remove("intro-active");
+          document.body.style.overflow = "";
+          window.dispatchEvent(new Event("intro-complete"));
         },
-      },
-      0.8
-    );
+        [],
+        0.8
+      );
+
+      tl.to(
+        overlayRef.current,
+        {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power1.out",
+          onComplete: () => {
+            if (overlayRef.current) overlayRef.current.style.display = "none";
+          },
+        },
+        0.8
+      );
+    }
   }, []);
 
   return (
@@ -100,7 +92,8 @@ export default function IntroScreen() {
       {/* Content layer — this entire layer gets scaled from the phone screen center */}
       <div
         ref={contentRef}
-        className="absolute inset-0 flex flex-col items-center justify-center pb-24"
+        className="absolute inset-0 flex flex-col items-center justify-center pt-12 pb-24 md:pt-0"
+        style={{ willChange: "transform" }}
       >
         {/* Background image */}
         <div

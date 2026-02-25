@@ -207,34 +207,48 @@ html.intro-active footer {
 }
 
 /* How It Works — horizontal scroll */
+/* Mobile: normal stacked layout */
 .hiw-section {
-  height: 400vh;
   position: relative;
 }
 
 .hiw-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .hiw-track {
-  display: flex;
-  gap: 2rem;
-  padding-left: 75vw;
-  padding-right: 10vw;
-  width: max-content;
-  will-change: transform;
+  display: none;
 }
 
 .hiw-card {
   width: clamp(300px, 30vw, 400px);
   flex-shrink: 0;
+}
+
+/* Desktop: horizontal scroll */
+@media (min-width: 768px) {
+  .hiw-section {
+    height: 400vh;
+  }
+
+  .hiw-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hiw-track {
+    display: flex;
+    gap: 2rem;
+    padding-left: 75vw;
+    padding-right: 10vw;
+    width: max-content;
+    will-change: transform;
+  }
 }
 
 /* Section heading scroll fade */

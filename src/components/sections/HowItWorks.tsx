@@ -98,8 +98,10 @@ export default function HowItWorks() {
     return () => observer.disconnect();
   }, []);
 
-  // Horizontal scroll for cards — only moves forward, never reverses
+  // Horizontal scroll for cards — desktop only
   useEffect(() => {
+    if (window.innerWidth < 768) return;
+
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
@@ -165,7 +167,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        {/* Cards track — starts far right, slides left on scroll, never reverses */}
+        {/* Desktop: horizontal scroll track */}
         <div ref={trackRef} className="hiw-track">
           {steps.map((step, index) => (
             <div key={step.number} className="hiw-card relative group">
@@ -198,6 +200,28 @@ export default function HowItWorks() {
                 </div>
                 <h3 className="text-xl font-bold">{step.title}</h3>
                 <p className="mt-3 text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile: stacked cards */}
+        <div className="md:hidden flex flex-col gap-4 px-6">
+          {steps.map((step) => (
+            <div key={step.number} className="group">
+              <div className="glow-card rounded-2xl border border-white/5 bg-card/50 p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                    {step.icon}
+                  </div>
+                  <span className="text-4xl font-bold text-white/[0.04] leading-none">
+                    {step.number}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold">{step.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   {step.description}
                 </p>
               </div>

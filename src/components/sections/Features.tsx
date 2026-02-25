@@ -89,19 +89,15 @@ function PhoneMockup({ feature, side = "left" }: { feature: (typeof features)[0]
   const tilt = side === "left" ? "rotateY(14deg) rotateX(2deg)" : "rotateY(-14deg) rotateX(2deg)";
 
   return (
-    <div className="relative" style={{ perspective: "1000px" }}>
+    <div className="relative lg:perspective-[1000px]" style={{ perspective: undefined }}>
       <div className="absolute inset-0 rounded-[50px] bg-brand/10 blur-[40px] scale-90" />
-      <div
-        className="relative"
-        style={{ transform: tilt, transformStyle: "preserve-3d" }}
-      >
-        {/* Phone front face */}
-        <div className="phone-mockup-3d relative w-[260px] p-[10px]">
-          {/* Notch */}
-          <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-black rounded-b-[14px] z-20" />
 
-          {/* Screen */}
-          <div className="rounded-[30px] overflow-hidden bg-[#09090b] relative">
+      {/* Mobile: flat phone, no 3D */}
+      <div
+        className="relative lg:hidden"
+      >
+        <div className="phone-mockup relative w-[260px] p-2 mx-auto">
+          <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
             <Image
               src={feature.image}
               alt={feature.tag}
@@ -111,33 +107,56 @@ function PhoneMockup({ feature, side = "left" }: { feature: (typeof features)[0]
             />
           </div>
         </div>
+      </div>
 
-        {/* Phone side edge (depth) */}
+      {/* Desktop: tilted 3D phone */}
+      <div
+        className="relative hidden lg:block"
+        style={{ perspective: "1000px" }}
+      >
         <div
-          className="absolute"
-          style={{
-            top: "36px",
-            bottom: "36px",
-            width: "12px",
-            ...(side === "left"
-              ? { right: "-6px", transformOrigin: "left center", transform: "rotateY(90deg)" }
-              : { left: "-6px", transformOrigin: "right center", transform: "rotateY(-90deg)" }),
-            background: "linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 30%, #222 50%, #1a1a1a 70%, #2a2a2a 100%)",
-            borderRadius: "2px",
-          }}
+          className="relative"
+          style={{ transform: tilt, transformStyle: "preserve-3d" }}
         >
-          {/* Volume / power buttons */}
-          {side === "left" ? (
-            <>
-              <div className="absolute top-[18%] left-0 w-[2px] h-[30px] rounded-l-sm bg-[#333]" />
-              <div className="absolute top-[28%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
-              <div className="absolute top-[35%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
-            </>
-          ) : (
-            <>
-              <div className="absolute top-[25%] right-0 w-[2px] h-[35px] rounded-r-sm bg-[#333]" />
-            </>
-          )}
+          <div className="phone-mockup-3d relative w-[260px] p-[10px]">
+            <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-black rounded-b-[14px] z-20" />
+            <div className="rounded-[30px] overflow-hidden bg-[#09090b] relative">
+              <Image
+                src={feature.image}
+                alt={feature.tag}
+                width={260}
+                height={560}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+
+          {/* Phone side edge (depth) */}
+          <div
+            className="absolute"
+            style={{
+              top: "36px",
+              bottom: "36px",
+              width: "12px",
+              ...(side === "left"
+                ? { right: "-6px", transformOrigin: "left center", transform: "rotateY(90deg)" }
+                : { left: "-6px", transformOrigin: "right center", transform: "rotateY(-90deg)" }),
+              background: "linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 30%, #222 50%, #1a1a1a 70%, #2a2a2a 100%)",
+              borderRadius: "2px",
+            }}
+          >
+            {side === "left" ? (
+              <>
+                <div className="absolute top-[18%] left-0 w-[2px] h-[30px] rounded-l-sm bg-[#333]" />
+                <div className="absolute top-[28%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
+                <div className="absolute top-[35%] left-0 w-[2px] h-[22px] rounded-l-sm bg-[#333]" />
+              </>
+            ) : (
+              <>
+                <div className="absolute top-[25%] right-0 w-[2px] h-[35px] rounded-r-sm bg-[#333]" />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
