@@ -13,15 +13,17 @@ export default function Hero() {
     const mobile = window.innerWidth < 768;
     setIsMobile(mobile);
 
-    if (mobile) {
-      // Mobile: skip intro gate, show content immediately
-      setReady(true);
-    } else {
-      // Desktop: wait for intro zoom to finish
-      const onIntroComplete = () => setTimeout(() => setReady(true), 200);
-      window.addEventListener("intro-complete", onIntroComplete);
-      return () => window.removeEventListener("intro-complete", onIntroComplete);
-    }
+    // Both mobile and desktop wait for intro-complete
+    // Mobile: no delay (intro is instant), Desktop: 200ms delay (after zoom)
+    const onIntroComplete = () => {
+      if (mobile) {
+        setReady(true);
+      } else {
+        setTimeout(() => setReady(true), 200);
+      }
+    };
+    window.addEventListener("intro-complete", onIntroComplete);
+    return () => window.removeEventListener("intro-complete", onIntroComplete);
   }, []);
 
   return (
