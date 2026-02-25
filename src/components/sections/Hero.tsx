@@ -26,10 +26,10 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-brand/8 blur-[150px] pointer-events-none animate-float-slow" />
-      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-light/6 blur-[120px] pointer-events-none animate-float-medium" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-brand/4 blur-[100px] pointer-events-none animate-float-fast" />
+      {/* Animated gradient orbs — desktop only (large blurs kill mobile GPU) */}
+      <div className="hidden md:block absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-brand/8 blur-[150px] pointer-events-none animate-float-slow" />
+      <div className="hidden md:block absolute bottom-1/3 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-light/6 blur-[120px] pointer-events-none animate-float-medium" />
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-brand/4 blur-[100px] pointer-events-none animate-float-fast" />
 
       {/* Grid background */}
       <div className="absolute inset-0 bg-grid opacity-50" />

@@ -104,8 +104,8 @@ export default function IntroScreen() {
         {/* Dark overlay on background */}
         <div className="absolute inset-0 bg-black/40" />
 
-        {/* Animated blue dots */}
-        <DottedSurface className="z-[1] opacity-60" />
+        {/* Animated blue dots — desktop only (Three.js too heavy for mobile) */}
+        <DottedSurface className="z-[1] opacity-60 hidden md:block" />
 
         {/* Vignette */}
         <div
