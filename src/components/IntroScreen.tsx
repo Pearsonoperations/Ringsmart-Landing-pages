@@ -15,6 +15,7 @@ export default function IntroScreen() {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     document.documentElement.classList.add("intro-active");
+    window.scrollTo(0, 0);
     return () => {
       document.body.style.overflow = "";
       document.documentElement.classList.remove("intro-active");
@@ -28,16 +29,18 @@ export default function IntroScreen() {
     const tl = gsap.timeline();
 
     if (isMobile) {
-      // Mobile: remove overlay instantly, then trigger Hero animation after one frame
+      // Mobile: remove overlay, scroll to top, then trigger Hero animation after a short delay
+      window.scrollTo(0, 0);
       document.documentElement.classList.remove("intro-active");
       document.body.style.overflow = "";
       if (overlayRef.current) overlayRef.current.style.display = "none";
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         window.dispatchEvent(new Event("intro-complete"));
-      });
+      }, 150);
       return;
     } else {
       // Desktop: full zoom-into-phone animation
+      window.scrollTo(0, 0);
       const screenRect = screenRef.current.getBoundingClientRect();
       const cx = screenRect.left + screenRect.width / 2;
       const cy = screenRect.top + screenRect.height / 2;
