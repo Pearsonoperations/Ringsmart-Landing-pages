@@ -83,29 +83,52 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Mobile phone — single image, simple fade-up */}
-          <motion.div
-            className="lg:hidden flex-shrink-0"
-            initial={{ opacity: 0, y: 60 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-          >
-            <div className="relative">
-              <div className="absolute -inset-8 rounded-full bg-brand/15 blur-[80px]" />
-              <div className="phone-mockup relative w-[280px] overflow-hidden p-2">
-                <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
-                  <Image
-                    src="/images/hero.png"
-                    alt="RingSmart App"
-                    width={280}
-                    height={607}
-                    className="w-full h-auto"
-                    priority
-                  />
+          {/* Mobile phone — rise up + screen swipe (3 images to stay light) */}
+          <div className="lg:hidden flex-shrink-0" style={{ perspective: "800px" }}>
+            <motion.div
+              initial={{ opacity: 0, y: 200, rotateY: -60 }}
+              animate={ready
+                ? { opacity: 1, y: 0, rotateY: 0 }
+                : { opacity: 0, y: 200, rotateY: -60 }
+              }
+              transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="relative">
+                <div className="absolute -inset-8 rounded-full bg-brand/15 blur-[60px]" />
+                <div className="phone-mockup relative w-[280px] overflow-hidden p-2">
+                  <div className="rounded-[34px] overflow-hidden bg-[#09090b]">
+                    <div
+                      className={ready ? "animate-phone-scroll-mobile" : "flex"}
+                      style={{ width: "300%" }}
+                    >
+                      <Image
+                        src="/images/hero.png"
+                        alt="RingSmart App"
+                        width={280}
+                        height={607}
+                        className="w-1/3 h-auto flex-shrink-0"
+                        priority
+                      />
+                      <Image
+                        src="/images/feature-fight-lab.png"
+                        alt="Fight Lab"
+                        width={280}
+                        height={607}
+                        className="w-1/3 h-auto flex-shrink-0"
+                      />
+                      <Image
+                        src="/images/app-home.png"
+                        alt="RingSmart Dashboard"
+                        width={280}
+                        height={607}
+                        className="w-1/3 h-auto flex-shrink-0"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Desktop phone — 3D rotate entrance + image carousel */}
           <div className="hidden lg:block flex-shrink-0" style={{ perspective: "1200px" }}>

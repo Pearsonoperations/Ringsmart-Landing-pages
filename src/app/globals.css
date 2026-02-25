@@ -159,6 +159,19 @@ html {
   animation-delay: 2s;
 }
 
+/* Phone mockup swipe animation - mobile: 3 screens, stays on last */
+@keyframes phone-swipe-mobile {
+  0%         { transform: translateX(0); }
+  15%, 40%   { transform: translateX(-33.333%); }
+  55%, 100%  { transform: translateX(-66.666%); }
+}
+
+.animate-phone-scroll-mobile {
+  display: flex;
+  animation: phone-swipe-mobile 6s ease-in-out forwards;
+  animation-delay: 1.5s;
+}
+
 /* Glow card hover */
 .glow-card {
   transition: all 0.3s ease;
